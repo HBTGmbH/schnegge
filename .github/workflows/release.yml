@@ -1,0 +1,49 @@
+name: release
+on:
+  push:
+    tags:
+      - v*.*.*
+
+jobs:
+  release:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Set up Go 1.18
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.18
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@master
+
+      - name: Build
+        env:
+          GO111MODULE: on
+          GOPATH: /home/runner/work/
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          export TAGNAME=$(jq --raw-output .ref "$GITHUB_EVENT_PATH" | sed -e "s/refs\/tags\///")
+          echo "========================================================="
+          echo "DEBUG:" $TAGNAME
+          echo "========================================================="
+          make cross
+          echo "========================================================="
+          echo "DEBUG: ls pkg/"
+          ls pkg/
+          echo "========================================================="
+          echo "go get -u github.com/tcnksm/ghr"
+          go install github.com/tcnksm/ghr@latest
+          echo "========================================================="
+          echo "DEBUG: ls $GOPATH"
+          ls $GOPATH
+          echo "========================================================="
+          echo "DEBUG: ls $GOPATH/bin"
+          ls $GOPATH/bin
+          echo "========================================================="
+          echo "DEBUG: ls $GOPATHbin"
+          ls $GOPATHbin
+          echo "========================================================="
+          $GOPATH/bin/ghr -n ${TAGNAME} -b "ʕ◔ϖ◔ʔ Release ${TAGNAME}" -draft ${TAGNAME} pkg/
