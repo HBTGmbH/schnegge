@@ -4,8 +4,21 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	"os"
+	"runtime"
 	"schnegge/internal/base"
 )
+
+var homePath string
+
+func init() {
+	operatingSystem := runtime.GOOS
+	switch operatingSystem {
+	case "windows":
+		homePath = os.Getenv("HOMEPATH")
+	default:
+		homePath = os.Getenv("HOME")
+	}
+}
 
 func ReadConfig() (Config, error) {
 	initViper()
@@ -30,7 +43,7 @@ func WriteConfigFile(cfg Config) error {
 	if value, ok := cfg.GetValue(Order); ok {
 		viper.Set("Order", value)
 	}
-	return viper.WriteConfigAs(os.Getenv("HOME") + "/.schnegge")
+	return viper.WriteConfigAs(homePath + "/.schnegge")
 }
 
 func PrintVerboseConfig() {
@@ -45,7 +58,7 @@ func PrintVerboseConfig() {
 
 func initViper() {
 	viper.SetConfigName(".schnegge")
-	viper.AddConfigPath("$HOME")
+	viper.AddConfigPath(homePath)
 	viper.SetConfigType("yaml")
 	viper.SetConfigPermissions(os.FileMode(0600))
 }
