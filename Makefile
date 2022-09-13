@@ -32,7 +32,7 @@ cross: cmd/schnegge/main.go  ## Build binaries for cross platform.
 	@# windows
 	@for arch in "amd64"; do \
 		GOOS=windows GOARCH=$${arch} make build; \
-		mv $(NAME) $(NAME).exe
+		mv $(NAME) $(NAME).exe; \
 		zip pkg/$(NAME)_$(VERSION)_windows_$${arch}.zip $(NAME).exe; \
 	done;
 
