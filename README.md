@@ -139,6 +139,7 @@ oder
 ## ToDos
 - Retry einbauen, falls es wegen Überlast zu falschen Antworten kommt (z.B. bei `schnegge list -datum Monat`)
 - Tests schreiben
+- Nach set (in der interaktiven Console) am besten die Config neu laden.
 
 ## Feature Ideen in der Zukunft
 - Samstag/Sonntag und Feiertage einfärben
